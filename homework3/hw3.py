@@ -1,22 +1,9 @@
 import numpy as np
 import pandas as pd
 import matplotlib as plt
-from prettyTables import Table
+from prettytable import PrettyTable as pt
 
 data = pd.read_csv('auto-mpg.data.csv')
-
-def linear_regression(X, y):
-    """
-    Computes the coefficients for linear regression using the Normal Equation.
-    """
-    b = np.linalg.inv(X.T.dot(X)).dot(X.T).dot(y)
-    return b
-
-def rmse(predictions, targets):
-    """
-    Computes the Root Mean Square Error.
-    """
-    return np.sqrt(((predictions - targets) ** 2).mean())
 
 # Using the scheme of Xb = y
 X = data.drop(['mpg', 'carname'], axis = 1).to_numpy()
@@ -33,11 +20,11 @@ indices = np.random.permutation(X.shape[0]) # Randomizing indices to shuffle row
 indices = np.array_split(indices, K)
 
 # Placeholder for storing RMSE of each fold
-RMSE_values = []
+RMSE = []
+predictions = []
+grad_desc = []
 
-table = Table()
-
-table.field_names = ["mpg", "Cylinder", "Displacement", "Horsepower", "Weight", "Acceleration", "Model_year", "RMSE"]
+myTable = pt(["", "Prediction", "Cylinders", "Displacement", "Horsepower", "Weight", "Acceleration", "Model Year", "RMSE"])
 
 for index in range(K):
 
@@ -51,18 +38,17 @@ for index in range(K):
     train_y = y[train_indices]
 
     # Implement Linear Regression
-    b_optimized = linear_regression(train_X, train_y)
+    b_optimized = np.dot(np.dot(np.linalg.inv(np.dot(train_X.transpose(), train_X)), train_X.transpose()), train_y)
 
-    # Make predictions on the testing set
-    predictions = test_X.dot(b_optimized)
+    # Calculating predictions
+    predictions = np.dot(test_X, b_optimized)
 
-    # Calculate RMSE for the current fold
-    current_rmse = rmse(predictions, test_y)
+    # Cost function using OLS (Gradient Descent)
 
-    row = [index + 1]
-    row.extend(b_optimized)
-    row.append(current_rmse)
 
-    table.add_row(row)
+    # Calculating RMSE for the current fold
+    RMSE = np.sqrt((predictions - test_y)**2).mean()
 
-print(table)
+    myTable.add_row(np.array(["Fold " + str(index+1), *b_optimized, RMSE], dtype=object))
+
+print(myTable)
