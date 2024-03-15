@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-import matplotlib as plt
+import matplotlib.pyplot as plt
 from prettytable import PrettyTable as pt
 
 data = pd.read_csv('auto-mpg.data.csv')
@@ -22,9 +22,11 @@ indices = np.array_split(indices, K)
 # Placeholder for storing RMSE of each fold
 RMSE = []
 predictions = []
-grad_desc = []
+b_optimized = []
 
 myTable = pt(["", "Prediction", "Cylinders", "Displacement", "Horsepower", "Weight", "Acceleration", "Model Year", "RMSE"])
+
+# Linear Regression Using RMSE
 
 for index in range(K):
 
@@ -43,12 +45,10 @@ for index in range(K):
     # Calculating predictions
     predictions = np.dot(test_X, b_optimized)
 
-    # Cost function using OLS (Gradient Descent)
-
-
     # Calculating RMSE for the current fold
     RMSE = np.sqrt((predictions - test_y)**2).mean()
 
     myTable.add_row(np.array(["Fold " + str(index+1), *b_optimized, RMSE], dtype=object))
 
+print("Table")
 print(myTable)
