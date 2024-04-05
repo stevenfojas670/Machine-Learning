@@ -1,6 +1,6 @@
 import pandas as pd
 from sklearn.svm import SVC
-from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.model_selection import cross_val_score
 from sklearn.preprocessing import StandardScaler
 
 # Implement SVM with MNIST data using linear, poly, and rbf, then compute the accuracy with 5-fold CV
@@ -16,9 +16,6 @@ X = df.drop('label', axis=1)
 # Standardizing the features
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
-
-# Test size for a small dataset is recommended to be 20% testing and 80%
-# We typically want to train with as much data as possible
 
 # SVM models with different kernels
 kernels = ['linear', 'poly', 'rbf']
