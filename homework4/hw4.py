@@ -26,7 +26,6 @@ for kernel in kernels:
     model = SVC(kernel=kernel)
     cv_scores = cross_val_score(model, X_scaled, y, cv=5)
     results[kernel] = cv_scores
-
 sum=0 # Sum of all kernel scores
 
 # Outputting the accuracy results
