@@ -52,3 +52,41 @@ for index in range(K):
 
 print("Table")
 print(myTable)
+
+# Linear Regression via GD
+
+# make two variables - X and y
+y = data.iloc[:, 0]  # the first column is for class label
+X = data.drop('mpg', axis=1)
+X = X.drop('carname', axis=1)
+n, p = X.shape # number of samples and features
+X = pd.DataFrame(np.c_[np.ones(n), X])
+
+
+# cost function using OLS
+def cost(X, y, b):
+    return np.sum((np.dot(X, b) - np.array(y))**2)
+
+
+def GD_LR(X, y, b):
+    return -np.dot(X.transpose(), y) + np.dot(np.dot(X.transpose(), X), b)
+
+
+# solve by gradient descent
+b_est = np.zeros(7)
+learning_rate = 0.0000000001
+bs = [b_est]
+costs = [cost(X, y, b_est)]
+
+for i in range(K):
+    b_est = b_est - learning_rate * GD_LR(X, y, b_est)
+    b_cost = cost(X, y, b_est)
+    bs.append(b_est)
+    costs.append(b_cost)
+
+# check convergence
+plt.plot(costs)
+plt.show()
+print(b_est)
+
+b_opt = b_est
